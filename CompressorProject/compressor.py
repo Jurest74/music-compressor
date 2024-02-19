@@ -3,12 +3,16 @@ import os
 import time
 import concurrent.futures
 import sys
+import time
 
 def is_file_valid(file_path):
     return os.path.isfile(file_path)
 
 def is_folder_valid(folder_path):
     return os.path.isdir(folder_path)
+
+def obtener_tiempo_transcurrido(start_time):
+    return time.time() - start_time
 
 def obtener_nombres_archivos(ruta_carpeta):
     try:
@@ -77,46 +81,51 @@ def delete_unnecessary_files(user_input_select_format, output_file_wav, output_f
             os.remove(output_file_wav)
 
 def process_convert_file_to_all_formats(full_path_input_file, folder_output):
-        output_file_mp3 = os.path.join(os.getcwd(), folder_output.replace('.aif', '.mp3'))
-        output_file_wav = os.path.join(os.getcwd(), folder_output.replace('.aif', '.wav'))
-        output_file_ogg = os.path.join(os.getcwd(), folder_output.replace('.aif', '.ogg'))
+    start_time = time.time()
+    output_file_mp3 = os.path.join(os.getcwd(), folder_output.replace('.aif', '.mp3'))
+    output_file_wav = os.path.join(os.getcwd(), folder_output.replace('.aif', '.wav'))
+    output_file_ogg = os.path.join(os.getcwd(), folder_output.replace('.aif', '.ogg'))
 
-        proces_to_mp3 = [(full_path_input_file, output_file_mp3, convert_audio_to_mp3),
-                        (full_path_input_file, output_file_wav, convert_audio_to_wav),
-                        (full_path_input_file, output_file_ogg, convert_audio_to_ogg)]
+    proces_to_mp3 = [(full_path_input_file, output_file_mp3, convert_audio_to_mp3),
+                    (full_path_input_file, output_file_wav, convert_audio_to_wav),
+                    (full_path_input_file, output_file_ogg, convert_audio_to_ogg)]
 
-        with concurrent.futures.ProcessPoolExecutor() as executor:
-            # Enviar tareas al pool y obtener un objeto Future para cada tarea
-            futures = [executor.submit(process_audio_conversion, args) for args in proces_to_mp3]
-            # Esperar a que se completen las tareas y obtener los resultados
-            resultados_tarea1 = [future.result() for future in concurrent.futures.as_completed(futures)]
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        # Enviar tareas al pool y obtener un objeto Future para cada tarea
+        futures = [executor.submit(process_audio_conversion, args) for args in proces_to_mp3]
+        # Esperar a que se completen las tareas y obtener los resultados
+        resultados_tarea1 = [future.result() for future in concurrent.futures.as_completed(futures)]
 
-        while True:
-           user_input_select_format = input("Por favor, ingresa el formato que deseas: ")
-           print(user_input_select_format)
+    while True:
+        user_input_select_format = input("Por favor, ingresa el formato que deseas: ")
+        print(user_input_select_format)
 
-           if user_input_select_format.lower() in ['wav', 'mp3', 'ogg']:
-                break  # Salir del bucle si el formato es válido
-           else:
-                print("Formato no válido. Por favor, ingrese 'wav', 'mp3' o 'ogg'.")
+        if user_input_select_format.lower() in ['wav', 'mp3', 'ogg']:
+            print(f"Formato del archivo convertido: {user_input_select_format.upper()}")
+            print(f"Tiempo de conversión: {obtener_tiempo_transcurrido(start_time):.2f} segundos")
+            break  # Salir del bucle si el formato es válido
+        else:
+            print("Formato no válido. Por favor, ingrese 'wav', 'mp3' o 'ogg'.")
 
-        delete_unnecessary_files(user_input_select_format, output_file_wav, output_file_mp3, output_file_ogg)
+    delete_unnecessary_files(user_input_select_format, output_file_wav, output_file_mp3, output_file_ogg)
 
 def process_convert_folder(full_path_input_file, format_output_files, folder_output):
+    start_time = time.time()
     proces_to_run = []
     nombres_archivos = obtener_nombres_archivos(full_path_input_file)
-    if os.path.isdir(full_path_input_file):
-        for nombre_archivo in nombres_archivos:
-            if(nombre_archivo != '.DS_Store'):
-                output_file = os.path.join(os.getcwd(), folder_output, nombre_archivo)
-                output_file = output_file.replace('.aif', '.' + format_output_files)
-                full_path_input = os.path.join(os.getcwd(), full_path_input_file, nombre_archivo)
-                if(format_output_files == 'mp3'):
-                    proces_to_run.append((full_path_input, output_file, convert_audio_to_mp3))
-                elif(format_output_files == 'wav'):
-                     proces_to_run.append((full_path_input, output_file, convert_audio_to_wav))
-                elif(format_output_files == 'ogg'):
-                     proces_to_run.append((full_path_input, output_file, convert_audio_to_ogg))
+    for nombre_archivo in nombres_archivos:
+        if(nombre_archivo != '.DS_Store'):
+            output_file = os.path.join(os.getcwd(), folder_output, nombre_archivo)
+            output_file = output_file.replace('.aif', '.' + format_output_files)
+            full_path_input = os.path.join(os.getcwd(), full_path_input_file, nombre_archivo)
+            if(format_output_files == 'mp3'):
+                proces_to_run.append((full_path_input, output_file, convert_audio_to_mp3))
+            elif(format_output_files == 'wav'):
+                 proces_to_run.append((full_path_input, output_file, convert_audio_to_wav))
+            elif(format_output_files == 'ogg'):
+                 proces_to_run.append((full_path_input, output_file, convert_audio_to_ogg))
+    print(f"Formato de la carpeta convertida: {format_output_files.upper()}")
+    print(f"Tiempo de conversión: {obtener_tiempo_transcurrido(start_time):.2f} segundos")
 
     with concurrent.futures.ProcessPoolExecutor() as executor:
         # Enviar tareas al pool y obtener un objeto Future para cada tarea
@@ -126,22 +135,30 @@ def process_convert_folder(full_path_input_file, format_output_files, folder_out
 
 def main():
     folder_output = "Output"
+    
+    if len(sys.argv) < 3:
+        print("Error: Argumentos insuficientes. \n Use For Files: python3 compressor.py -f [archivo] \n Use For Folders: python3 compressor.py -f [carpeta] [-e=(formato)]")
+        sys.exit(1)
 
     mi_parametro_archivo = sys.argv[2]
     full_path_input_file = os.path.join(os.getcwd(), mi_parametro_archivo)
     full_path_output_file = os.path.join(os.getcwd(), folder_output, mi_parametro_archivo)
 
     if is_file_valid(full_path_input_file):
+        print(f"El archivo {full_path_input_file} es válido.")
         process_convert_file_to_all_formats(full_path_input_file, full_path_output_file)
+    elif is_folder_valid(full_path_input_file):
+        if len(sys.argv) < 4 or not sys.argv[3].startswith('-e=') or len(sys.argv[3]) <= 3:
+            print("Error: Se debe especificar el formato de salida con la opción '-e=[Formato]'.")
+            sys.exit(1)
+        print(f"La carpeta {full_path_input_file} es válida.")
+        mi_parametro_e = sys.argv[3]
+        format_output_files = mi_parametro_e.split('=')[1]
+        print(format_output_files)
+        process_convert_folder(full_path_input_file, format_output_files, folder_output)
     else:
-        if is_folder_valid(full_path_input_file):
-            print(f"La carpeta {full_path_input_file} es válida.")
-            mi_parametro_e = sys.argv[3]
-            format_output_files = mi_parametro_e.split('=')[1]
-            print(format_output_files)
-            process_convert_folder(full_path_input_file, format_output_files, folder_output)
-        else:
-            print("Parámetros invalidos")
+        print("Error: Direccion de archivo o carpeta invalida")
+        sys.exit(1)
 
     print("Los Ejecución del programa ha finalizado")
 
