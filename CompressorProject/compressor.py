@@ -25,6 +25,11 @@ def convert_audio_to_mp3(input_cda, output_format, bitrate='192k'):
     audio.export(output_format, format='mp3', bitrate=bitrate)
     print("Finaliza conversion a MP3")
 
+    #Impresion tamaño del archivo
+    output_size_bytes = os.path.getsize(output_format)
+    output_size_megabytes = output_size_bytes / (1024 * 1024)
+    print(f"Tamaño del archivo de salida MP3: {output_size_megabytes:.2f} megabytes")
+
 # Convert to WAV
 def convert_audio_to_wav(input_cda, output_format, bitrate='192k'):
     print("Inicia conversion a WAV")
@@ -33,13 +38,21 @@ def convert_audio_to_wav(input_cda, output_format, bitrate='192k'):
     audio.export(output_format, format='wav', bitrate=bitrate)
     print("Finaliza conversion a WAV")
 
+    #Impresion tamaño del archivo
+    output_size_bytes = os.path.getsize(output_format)
+    output_size_megabytes = output_size_bytes / (1024 * 1024)
+    print(f"Tamaño del archivo de salida WAV: {output_size_megabytes:.2f} megabytes")
+
 # Convert to OGG
 def convert_audio_to_ogg(input_cda, output_format, bitrate='192k'):
     print("Inicia conversion a OGG")
     audio = AudioSegment.from_file(input_cda, format='aiff')
-    time.sleep(1) 
     audio.export(output_format, format='ogg', bitrate=bitrate)
     print("Finaliza conversion a OGG")
+    #Impresion tamaño del archivo
+    output_size_bytes = os.path.getsize(output_format)
+    output_size_megabytes = output_size_bytes / (1024 * 1024)
+    print(f"Tamaño del archivo de salida OGG: {output_size_megabytes:.2f} megabytes")
 
 def process_audio_conversion(args):
     input_file, output_file, conversion_function = args
