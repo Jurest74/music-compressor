@@ -25,10 +25,12 @@ def obtener_nombres_archivos(ruta_carpeta):
 
 # Convert to MP3
 def convert_audio_to_mp3(input_cda, output_format, bitrate='192k'):
+    start_time = time.time()
     print("Inicia conversion a MP3")
     audio = AudioSegment.from_file(input_cda, format='aiff')
     audio.export(output_format, format='mp3', bitrate=bitrate)
-    print("Finaliza conversion a MP3")
+    stop_time = obtener_tiempo_transcurrido(start_time)
+    print(f"Finaliza conversion a MP3 - Tiempo: {stop_time:.2f} seg")
 
     #Impresion tamaño del archivo
     output_size_bytes = os.path.getsize(output_format)
@@ -37,10 +39,12 @@ def convert_audio_to_mp3(input_cda, output_format, bitrate='192k'):
 
 # Convert to WAV
 def convert_audio_to_wav(input_cda, output_format, bitrate='192k'):
+    start_time = time.time()
     print("Inicia conversion a WAV")
     audio = AudioSegment.from_file(input_cda, format='aiff')
     audio.export(output_format, format='wav', bitrate=bitrate)
-    print("Finaliza conversion a WAV")
+    stop_time = obtener_tiempo_transcurrido(start_time)
+    print(f"Finaliza conversion a WAV - Tiempo: {stop_time:.2f} seg")
 
     #Impresion tamaño del archivo
     output_size_bytes = os.path.getsize(output_format)
@@ -49,10 +53,13 @@ def convert_audio_to_wav(input_cda, output_format, bitrate='192k'):
 
 # Convert to OGG
 def convert_audio_to_ogg(input_cda, output_format, bitrate='192k'):
+    start_time = time.time()
     print("Inicia conversion a OGG")
     audio = AudioSegment.from_file(input_cda, format='aiff')
     audio.export(output_format, format='ogg', bitrate=bitrate)
-    print("Finaliza conversion a OGG")
+    stop_time = obtener_tiempo_transcurrido(start_time)
+    print(f"Finaliza conversion a OGG - Tiempo: {stop_time:.2f} seg")
+    
     #Impresion tamaño del archivo
     output_size_bytes = os.path.getsize(output_format)
     output_size_megabytes = output_size_bytes / (1024 * 1024)
@@ -84,13 +91,13 @@ def process_convert_file_to_all_formats(full_path_input_file, folder_output):
     output_file_wav = os.path.join(os.getcwd(), folder_output.replace('.aif', '.wav'))
     output_file_ogg = os.path.join(os.getcwd(), folder_output.replace('.aif', '.ogg'))
 
-    proces_to_mp3 = [(full_path_input_file, output_file_mp3, convert_audio_to_mp3),
+    process_to_all = [(full_path_input_file, output_file_mp3, convert_audio_to_mp3),
                     (full_path_input_file, output_file_wav, convert_audio_to_wav),
                     (full_path_input_file, output_file_ogg, convert_audio_to_ogg)]
 
     with concurrent.futures.ProcessPoolExecutor() as executor:
         # Enviar tareas al pool y obtener un objeto Future para cada tarea
-        futures = [executor.submit(process_audio_conversion, args) for args in proces_to_mp3]
+        futures = [executor.submit(process_audio_conversion, args) for args in process_to_all]
         # Esperar a que se completen las tareas y obtener los resultados
         resultados_tarea1 = [future.result() for future in concurrent.futures.as_completed(futures)]
         
@@ -98,13 +105,12 @@ def process_convert_file_to_all_formats(full_path_input_file, folder_output):
 
     while True:
         user_input_select_format = input("Por favor, ingresa el formato que deseas: ")
-        print(user_input_select_format)
         if user_input_select_format.lower() in ['wav', 'mp3', 'ogg']:
-            print(f"Formato del archivo convertido: {user_input_select_format.upper()}")
+            print(f"\nFormato del archivo convertido: {user_input_select_format.upper()}")
             print(f"Tiempo de conversión: {stop_time:.2f} segundos")
             break  # Salir del bucle si el formato es válido
         else:
-            print("Formato no válido. Por favor, ingrese 'wav', 'mp3' o 'ogg'.")
+            print("Formato no válido. Por favor, ingrese 'wav', 'mp3' o 'ogg'. \n")
 
     delete_unnecessary_files(user_input_select_format, output_file_wav, output_file_mp3, output_file_ogg)
 
@@ -136,8 +142,8 @@ def process_convert_folder(full_path_input_file, format_output_files, folder_out
 def main():
     folder_output = "Output"
     
-    if len(sys.argv) < 3:
-        print("Error: Argumentos insuficientes. \n Use For Files: python3 compressor.py -f [archivo] \n Use For Folders: python3 compressor.py -f [carpeta] [-e=(formato)]")
+    if len(sys.argv) < 3 or sys.argv[1] != '-f':
+        print("Error: Argumentos insuficientes o incorrectos. \n Use For Files: python3 compressor.py -f [archivo] \n Use For Folders: python3 compressor.py -f [carpeta] [-e=(formato)]")
         sys.exit(1)
 
     mi_parametro_archivo = sys.argv[2]
