@@ -143,7 +143,7 @@ def main():
     folder_output = "Output"
     
     if len(sys.argv) < 3 or sys.argv[1] != '-f':
-        print("Error: Argumentos insuficientes o incorrectos. \n Use For Files: python3 compressor.py -f [archivo] \n Use For Folders: python3 compressor.py -f [carpeta] [-e=(formato)]")
+        print("Error: Argumentos insuficientes o incorrectos. \n Use For Files: python3 dcm.py -f [archivo] \n Use For Folders: python3 dcm.py -f [carpeta] [-e=(formato)]")
         sys.exit(1)
 
     mi_parametro_archivo = sys.argv[2]
@@ -151,13 +151,13 @@ def main():
     full_path_output_file = os.path.join(os.getcwd(), folder_output, mi_parametro_archivo)
 
     if is_file_valid(full_path_input_file):
-        print(f"\nEl archivo {full_path_input_file} es válido.\n")
+        print(f"El archivo {full_path_input_file} es válido.")
         process_convert_file_to_all_formats(full_path_input_file, full_path_output_file)
     elif is_folder_valid(full_path_input_file):
         if len(sys.argv) < 4 or not sys.argv[3].startswith('-e=') or len(sys.argv[3]) <= 3:
             print("Error: Para la conversion de carpetas, se debe especificar el formato de salida con la opción '-e=[Formato]'.")
             sys.exit(1)
-        print(f"\nLa carpeta {full_path_input_file} es válida.\n")
+        print(f"La carpeta {full_path_input_file} es válida.")
         mi_parametro_e = sys.argv[3]
         format_output_files = mi_parametro_e.split('=')[1]
         if format_output_files.lower() not in ['mp3', 'wav', 'ogg']:
