@@ -103,7 +103,7 @@ def process_convert_file_to_all_formats(full_path_input_file, folder_output):
         print(user_input_select_format)
         if user_input_select_format.lower() in ['wav', 'mp3', 'ogg']:
             print(f"Formato del archivo convertido: {user_input_select_format.upper()}")
-            print(f"Tiempo de conversión: {time_stop:.2f} segundos")
+            print(f"Tiempo de conversión: {stop_time:.2f} segundos")
             break  # Salir del bucle si el formato es válido
         else:
             print("Formato no válido. Por favor, ingrese 'wav', 'mp3' o 'ogg'.")
