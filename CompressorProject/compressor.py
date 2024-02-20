@@ -124,14 +124,15 @@ def process_convert_folder(full_path_input_file, format_output_files, folder_out
                  proces_to_run.append((full_path_input, output_file, convert_audio_to_wav))
             elif(format_output_files == 'ogg'):
                  proces_to_run.append((full_path_input, output_file, convert_audio_to_ogg))
-    print(f"Formato de la carpeta convertida: {format_output_files.upper()}")
-    print(f"Tiempo de conversión: {obtener_tiempo_transcurrido(start_time):.2f} segundos")
-
+    
     with concurrent.futures.ProcessPoolExecutor() as executor:
         # Enviar tareas al pool y obtener un objeto Future para cada tarea
         futures = [executor.submit(process_audio_conversion, args) for args in proces_to_run]
         # Esperar a que se completen las tareas y obtener los resultados
         resultados_tarea1 = [future.result() for future in concurrent.futures.as_completed(futures)]
+    
+    print(f"Formato de la carpeta convertida: {format_output_files.upper()}")
+    print(f"Tiempo de conversión: {obtener_tiempo_transcurrido(start_time):.2f} segundos")
 
 def main():
     folder_output = "Output"
