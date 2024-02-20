@@ -95,14 +95,15 @@ def process_convert_file_to_all_formats(full_path_input_file, folder_output):
         futures = [executor.submit(process_audio_conversion, args) for args in proces_to_mp3]
         # Esperar a que se completen las tareas y obtener los resultados
         resultados_tarea1 = [future.result() for future in concurrent.futures.as_completed(futures)]
+        
+    stop_time = obtener_tiempo_transcurrido(start_time)
 
     while True:
         user_input_select_format = input("Por favor, ingresa el formato que deseas: ")
         print(user_input_select_format)
-
         if user_input_select_format.lower() in ['wav', 'mp3', 'ogg']:
             print(f"Formato del archivo convertido: {user_input_select_format.upper()}")
-            print(f"Tiempo de conversión: {obtener_tiempo_transcurrido(start_time):.2f} segundos")
+            print(f"Tiempo de conversión: {time_stop:.2f} segundos")
             break  # Salir del bucle si el formato es válido
         else:
             print("Formato no válido. Por favor, ingrese 'wav', 'mp3' o 'ogg'.")
