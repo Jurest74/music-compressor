@@ -107,7 +107,7 @@ def process_convert_file_to_all_formats(full_path_input_file, folder_output):
         user_input_select_format = input("\nPor favor, ingresa el formato que deseas: ")
         if user_input_select_format.lower() in ['wav', 'mp3', 'ogg']:
             print(f"\nFormato del archivo convertido: {user_input_select_format.upper()}")
-            print(f"Tiempo de conversión: {stop_time:.2f} segundos")
+            print(f"Tiempo de conversión total archivo: {stop_time:.2f} segundos")
             break  # Salir del bucle si el formato es válido
         else:
             print("Formato no válido. Por favor, ingrese 'wav', 'mp3' o 'ogg'. \n")
@@ -137,7 +137,7 @@ def process_convert_folder(full_path_input_file, format_output_files, folder_out
         resultados_tarea1 = [future.result() for future in concurrent.futures.as_completed(futures)]
     
     print(f"\nFormato de la carpeta convertida: {format_output_files.upper()}")
-    print(f"Tiempo de conversión: {obtener_tiempo_transcurrido(start_time):.2f} segundos")
+    print(f"Tiempo de conversión total carpeta: {obtener_tiempo_transcurrido(start_time):.2f} segundos")
 
 def main():
     folder_output = "Output"
@@ -151,19 +151,18 @@ def main():
     full_path_output_file = os.path.join(os.getcwd(), folder_output, mi_parametro_archivo)
 
     if is_file_valid(full_path_input_file):
-        print(f"El archivo {full_path_input_file} es válido.")
+        print(f"\nEl archivo {full_path_input_file} es válido.\n")
         process_convert_file_to_all_formats(full_path_input_file, full_path_output_file)
     elif is_folder_valid(full_path_input_file):
         if len(sys.argv) < 4 or not sys.argv[3].startswith('-e=') or len(sys.argv[3]) <= 3:
             print("Error: Para la conversion de carpetas, se debe especificar el formato de salida con la opción '-e=[Formato]'.")
             sys.exit(1)
-        print(f"La carpeta {full_path_input_file} es válida.")
+        print(f"\nLa carpeta {full_path_input_file} es válida.\n")
         mi_parametro_e = sys.argv[3]
         format_output_files = mi_parametro_e.split('=')[1]
         if format_output_files.lower() not in ['mp3', 'wav', 'ogg']:
             print("Error: Formato de salida no válido. Utilice mp3, wav u ogg.")
             sys.exit(1)
-        print(format_output_files)
         process_convert_folder(full_path_input_file, format_output_files, folder_output)
     else:
         print("Error: Direccion de archivo o carpeta invalida")
