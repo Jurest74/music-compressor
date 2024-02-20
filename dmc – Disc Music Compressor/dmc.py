@@ -104,7 +104,7 @@ def process_convert_file_to_all_formats(full_path_input_file, folder_output):
     stop_time = obtener_tiempo_transcurrido(start_time)
 
     while True:
-        user_input_select_format = input("Por favor, ingresa el formato que deseas: ")
+        user_input_select_format = input("\nPor favor, ingresa el formato que deseas: ")
         if user_input_select_format.lower() in ['wav', 'mp3', 'ogg']:
             print(f"\nFormato del archivo convertido: {user_input_select_format.upper()}")
             print(f"Tiempo de conversión: {stop_time:.2f} segundos")
@@ -136,7 +136,7 @@ def process_convert_folder(full_path_input_file, format_output_files, folder_out
         # Esperar a que se completen las tareas y obtener los resultados
         resultados_tarea1 = [future.result() for future in concurrent.futures.as_completed(futures)]
     
-    print(f"Formato de la carpeta convertida: {format_output_files.upper()}")
+    print(f"\nFormato de la carpeta convertida: {format_output_files.upper()}")
     print(f"Tiempo de conversión: {obtener_tiempo_transcurrido(start_time):.2f} segundos")
 
 def main():
@@ -169,7 +169,7 @@ def main():
         print("Error: Direccion de archivo o carpeta invalida")
         sys.exit(1)
 
-    print("Los Ejecución del programa ha finalizado")
+    print("\nLos Ejecución del programa ha finalizado")
 
 if __name__ == "__main__":
     main()
