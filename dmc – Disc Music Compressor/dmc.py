@@ -128,6 +128,12 @@ def process_convert_folder(full_path_input_file, format_output_files, folder_out
     start_time = time.time()
     proces_to_run = []
     nombres_archivos = obtener_nombres_archivos(full_path_input_file)
+            
+    # Verificar si la carpeta está vacía o no contiene archivos .aif
+    if not nombres_archivos or all(not archivo.endswith('.aif') for archivo in nombres_archivos):
+        print("Error: La carpeta especificada no contiene archivos con la extensión .aif.")
+        return
+        
     for nombre_archivo in nombres_archivos:
         if(nombre_archivo != '.DS_Store'):
             output_file = os.path.join(os.getcwd(), folder_output, nombre_archivo)
