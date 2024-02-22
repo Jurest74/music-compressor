@@ -4,6 +4,7 @@ import time
 import concurrent.futures
 import sys
 import time
+from datetime import datetime
 
 def is_file_valid(file_path):
     return os.path.isfile(file_path)
@@ -26,44 +27,53 @@ def obtener_nombres_archivos(ruta_carpeta):
 # Convert to MP3
 def convert_audio_to_mp3(input_cda, output_format, bitrate='192k'):
     start_time = time.time()
+    iniciomp3 = datetime.now() 
     print("Inicia conversion a MP3")
     audio = AudioSegment.from_file(input_cda, format='aiff')
     audio.export(output_format, format='mp3', bitrate=bitrate)
     stop_time = obtener_tiempo_transcurrido(start_time)
+    print(f"el proceso de conversion a MP3 inicio: {iniciomp3.strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"Finaliza conversion a MP3 - Tiempo: {stop_time:.2f} seg")
 
     #Impresion tamaño del archivo
     output_size_bytes = os.path.getsize(output_format)
     output_size_megabytes = output_size_bytes / (1024 * 1024)
     print(f"Tamaño del archivo de salida MP3: {output_size_megabytes:.2f} megabytes")
+    print("")
 
 # Convert to WAV
 def convert_audio_to_wav(input_cda, output_format, bitrate='192k'):
     start_time = time.time()
+    iniciowav = datetime.now() 
     print("Inicia conversion a WAV")
     audio = AudioSegment.from_file(input_cda, format='aiff')
     audio.export(output_format, format='wav', bitrate=bitrate)
     stop_time = obtener_tiempo_transcurrido(start_time)
+    print(f"el proceso de conversion a wav inicio: {iniciowav.strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"Finaliza conversion a WAV - Tiempo: {stop_time:.2f} seg")
-
+    
     #Impresion tamaño del archivo
     output_size_bytes = os.path.getsize(output_format)
     output_size_megabytes = output_size_bytes / (1024 * 1024)
     print(f"Tamaño del archivo de salida WAV: {output_size_megabytes:.2f} megabytes")
-
+    print ("")
+   
 # Convert to OGG
 def convert_audio_to_ogg(input_cda, output_format, bitrate='192k'):
     start_time = time.time()
+    inicioOgg = datetime.now() 
     print("Inicia conversion a OGG")
     audio = AudioSegment.from_file(input_cda, format='aiff')
     audio.export(output_format, format='ogg', bitrate=bitrate)
     stop_time = obtener_tiempo_transcurrido(start_time)
+    print(f"el proceso de conversion a Ogg inicio: {inicioOgg.strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"Finaliza conversion a OGG - Tiempo: {stop_time:.2f} seg")
     
     #Impresion tamaño del archivo
     output_size_bytes = os.path.getsize(output_format)
     output_size_megabytes = output_size_bytes / (1024 * 1024)
     print(f"Tamaño del archivo de salida OGG: {output_size_megabytes:.2f} megabytes")
+    print ("")
 
 def process_audio_conversion(args):
     #print(args)
