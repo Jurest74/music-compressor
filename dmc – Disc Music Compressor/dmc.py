@@ -104,10 +104,10 @@ def process_convert_file_to_all_formats(full_path_input_file, folder_output):
     stop_time = obtener_tiempo_transcurrido(start_time)
 
     while True:
-        user_input_select_format = input("Por favor, ingresa el formato que deseas: ")
+        user_input_select_format = input("\nPor favor, ingresa el formato que deseas: ")
         if user_input_select_format.lower() in ['wav', 'mp3', 'ogg']:
             print(f"\nFormato del archivo convertido: {user_input_select_format.upper()}")
-            print(f"Tiempo de conversión: {stop_time:.2f} segundos")
+            print(f"Tiempo de conversión total archivo: {stop_time:.2f} segundos")
             break  # Salir del bucle si el formato es válido
         else:
             print("Formato no válido. Por favor, ingrese 'wav', 'mp3' o 'ogg'. \n")
@@ -136,14 +136,14 @@ def process_convert_folder(full_path_input_file, format_output_files, folder_out
         # Esperar a que se completen las tareas y obtener los resultados
         resultados_tarea1 = [future.result() for future in concurrent.futures.as_completed(futures)]
     
-    print(f"Formato de la carpeta convertida: {format_output_files.upper()}")
-    print(f"Tiempo de conversión: {obtener_tiempo_transcurrido(start_time):.2f} segundos")
+    print(f"\nFormato de la carpeta convertida: {format_output_files.upper()}")
+    print(f"Tiempo de conversión total carpeta: {obtener_tiempo_transcurrido(start_time):.2f} segundos")
 
 def main():
     folder_output = "Output"
     
     if len(sys.argv) < 3 or sys.argv[1] != '-f':
-        print("Error: Argumentos insuficientes o incorrectos. \n Use For Files: python3 compressor.py -f [archivo] \n Use For Folders: python3 compressor.py -f [carpeta] [-e=(formato)]")
+        print("Error: Argumentos insuficientes o incorrectos. \n Use For Files: python3 dcm.py -f [archivo] \n Use For Folders: python3 dcm.py -f [carpeta] [-e=(formato)]")
         sys.exit(1)
 
     mi_parametro_archivo = sys.argv[2]
@@ -163,13 +163,12 @@ def main():
         if format_output_files.lower() not in ['mp3', 'wav', 'ogg']:
             print("Error: Formato de salida no válido. Utilice mp3, wav u ogg.")
             sys.exit(1)
-        print(format_output_files)
         process_convert_folder(full_path_input_file, format_output_files, folder_output)
     else:
         print("Error: Direccion de archivo o carpeta invalida")
         sys.exit(1)
 
-    print("Los Ejecución del programa ha finalizado")
+    print("\nLos Ejecución del programa ha finalizado")
 
 if __name__ == "__main__":
     main()
